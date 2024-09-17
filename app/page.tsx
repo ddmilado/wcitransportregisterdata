@@ -1,8 +1,6 @@
 "use client"; // Mark this component as a Client Component
-
-import Image from "next/image";
 import { useState } from "react";
-import { Client, Account, Databases } from 'appwrite';
+import { Client, Databases } from 'appwrite';
 
 const client = new Client();
 client
@@ -15,7 +13,7 @@ const COLLECTION_ID = '66e8e4060021b62520d3'; // Your collection ID
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState(""); // State for wallet address input
   const [isSubmitting, setIsSubmitting] = useState(false); // State for button active/inactive
-  const [documentId, setDocumentId] = useState("66e8e9fe0014da157afd"); // State for document ID
+  // const [documentId, setDocumentId] = useState("66e8e9fe0014da157afd"); // State for document ID
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
