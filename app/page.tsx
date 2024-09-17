@@ -5,10 +5,10 @@ import { Client, Databases } from 'appwrite';
 const client = new Client();
 client
   .setEndpoint('https://cloud.appwrite.io/v1')
-  .setProject('66e8e38f00086688d657');
+  .setProject('66c8fb260036e14ffbf2');
 
-const DATABASE_ID = '66e8e3f4002bf9158a49'; // Your database ID
-const COLLECTION_ID = '66e8e4060021b62520d3'; // Your collection ID
+const DATABASE_ID = '66c91238000e303fde72'; // Your database ID
+const COLLECTION_ID = '66e9a6d2003410ef7ce4'; // Your collection ID
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState(""); // State for wallet address input
