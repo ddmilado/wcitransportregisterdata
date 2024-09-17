@@ -1,100 +1,72 @@
+"use client"; // Mark this component as a Client Component
+
 import Image from "next/image";
+import { useState } from "react"; // Import useState for managing input state
+// Import useState for managing input state
+import { Client, Account, Databases } from 'appwrite';
+const client = new Client();
+
+client
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('66e8e38f00086688d657');
+
+const DATABASE_ID = '66e8e3f4002bf9158a49'; // Store your database ID here
+const COLLECTION_ID = '66e8e4060021b62520d3'; // Store your collection ID here
 
 export default function Home() {
+  const [walletAddress, setWalletAddress] = useState(""); // State for wallet address
+  const [isSubmitting, setIsSubmitting] = useState(false); // State for button active/inactive
+  const [documentId, setDocumentId] = useState("66e8e9fe0014da157afd"); // State for document ID
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Specify the type for 'e'
+    e.preventDefault(); // Prevent default form submission
+    setIsSubmitting(true); // Set button to inactive
+
+    console.log("Submitting wallet address:", walletAddress); // Debugging statement
+
+    try {
+      const database = new Databases(client); // Create a Databases instance
+      // Validate documentId before using it
+      if (documentId.length > 36 || !/^[a-zA-Z0-9_]+$/.test(documentId) || documentId.startsWith('_')) {
+        throw new Error("Invalid documentId format.");
+      }
+
+      const response = await database.updateDocument(DATABASE_ID, COLLECTION_ID, documentId, 'walletAddress', { walletAddress }); // Pass walletAddress as an object
+      console.log("Document updated:", response); // Log the response
+      alert("Wallet Address updated"); // Show success alert
+      setWalletAddress(""); // Clear the input field
+    } catch (error) {
+      console.error("Error updating wallet address:", error); // Log the error object
+      alert(`Failed to update wallet address: ${(error as Error).message || error}`); // Cast error to Error type
+    } finally {
+      setIsSubmitting(false); // Set button back to active
+    }
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* New Form Section */}
+        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+          <input
+            type="text"
+            placeholder="Enter a wallet address"
+            value={walletAddress}
+            onChange={(e) => setWalletAddress(e.target.value)} // Update state on input change
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isSubmitting} // Disable input while submitting
+          />
+          <button
+            type="submit"
+            className={`bg-red-700 text-white rounded-full h-10 w-40 hover:bg-red-500 transition duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isSubmitting} // Disable button while submitting
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            {isSubmitting ? 'Sending...' : 'Submit'}
+          </button>
+        </form>
+        {/* End of New Form Section */}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">    
       </footer>
     </div>
   );
