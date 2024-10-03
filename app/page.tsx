@@ -33,7 +33,7 @@ export default function Home() {
         newPassword // password
       );
       console.log(result); // Log the result or handle it as needed
-      alert(`Password successfully updated! UserID: ${userId}, Secret: ${secret}`); // Alert with userId and secret
+      alert(`Password successfully updated!`); // Alert with userId and secret
     } catch (error) {
       // Handle error (e.g., show an error message)
     } finally {
