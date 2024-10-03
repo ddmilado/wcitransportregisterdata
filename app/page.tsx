@@ -1,15 +1,12 @@
 "use client"; // Mark this component as a Client Component
 import { useState } from "react";
-import { Client, Databases, Account } from 'appwrite';
+import { Client, Account } from 'appwrite';
 
 
 const client = new Client()
   .setEndpoint('https://cloud.appwrite.io/v1')
   .setProject('66c8fb260036e14ffbf2');
   const account = new Account(client);
-const DATABASE_ID = '66c91238000e303fde72'; // Your database ID
-const COLLECTION_ID = '66e9a6d2003410ef7ce4'; // Your collection ID
-
 export default function Home() {
   const [newPassword, setNewPassword] = useState(""); // State for new password input
   const [isSubmitting, setIsSubmitting] = useState(false); // State for button active/inactive
