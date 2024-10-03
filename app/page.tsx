@@ -14,14 +14,26 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
     setIsSubmitting(true);
+
+    // Get userId and secret from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId'); // Extract userId from query parameters
+    const secret = urlParams.get('secret'); // Extract secret from query parameters
+
+    if (!userId || !secret) {
+      alert('UserID and Secret must be provided in the URL.'); // Alert if userId or secret is missing
+      setIsSubmitting(false); // Re-enable the button
+      return; // Exit the function if values are missing
+    }
+
     try {
       const result = await account.updateRecovery(
-        '<USER_ID>', // userId
-        '<SECRET>', // secret
+        userId, // userId
+        secret, // secret
         newPassword // password
       );
       console.log(result); // Log the result or handle it as needed
-      // Handle success (e.g., show a success message)
+      alert(`Password successfully updated! UserID: ${userId}, Secret: ${secret}`); // Alert with userId and secret
     } catch (error) {
       // Handle error (e.g., show an error message)
     } finally {
