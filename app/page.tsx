@@ -20,6 +20,7 @@ export default function Home() {
         '<SECRET>', // secret
         newPassword // password
       );
+      console.log(result); // Log the result or handle it as needed
       // Handle success (e.g., show a success message)
     } catch (error) {
       // Handle error (e.g., show an error message)
