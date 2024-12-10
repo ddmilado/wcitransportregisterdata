@@ -1,6 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Client, Databases, Query } from 'appwrite';
+import { Client, Databases, Query, Models } from 'appwrite';
+
+// Define the interface for registration data
+interface Registration {
+  $id: string;
+  $createdAt: string;
+  $collectionId: string;
+  $databaseId: string;
+  $updatedAt: string;
+  $permissions: string[];
+  fullName: string;
+  pickupPoint: string;
+  phoneNumber: string;
+}
 
 const client = new Client()
   .setEndpoint('https://cloud.appwrite.io/v1')
@@ -8,7 +21,7 @@ const client = new Client()
 const databases = new Databases(client);
 
 export default function Home() {
-  const [registrations, setRegistrations] = useState([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,11 +30,11 @@ export default function Home() {
 
   const fetchRegistrations = async () => {
     try {
-      const response = await databases.listDocuments(
-        '675821f00019a9ddd1c0', // Your database ID
-        '67582af800226be0de89', // Your collection ID
+      const response = await databases.listDocuments<Registration>(
+        '675821f00019a9ddd1c0',
+        '67582af800226be0de89',
         [
-          Query.orderDesc('$createdAt'), // Sort by creation date
+          Query.orderDesc('$createdAt'),
         ]
       );
       setRegistrations(response.documents);
