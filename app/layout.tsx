@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "PIZZANISTA!",
-  description: "Wallet Address Collector for Pizzanista!",
+  title: "SHILOH 2024",
+  description: "Ever winning wisdom!",
 };
 
 export default function RootLayout({
