@@ -35,7 +35,7 @@ export default function Home() {
         '675821f00019a9ddd1c0',
         '67582af800226be0de89',
         [
-          Query.equal('location', 'Abu hail'),
+          Query.equal('location', 'Al Nahda'),
           Query.orderDesc('$createdAt'),
         ]
       );
