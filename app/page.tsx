@@ -13,6 +13,7 @@ interface Registration {
   fullName: string;
   pickupPoint: string;
   phoneNumber: string;
+  location: string;
 }
 
 const client = new Client()
@@ -34,6 +35,7 @@ export default function Home() {
         '675821f00019a9ddd1c0',
         '67582af800226be0de89',
         [
+          Query.equal('location', 'Abu hail'),
           Query.orderDesc('$createdAt'),
         ]
       );
