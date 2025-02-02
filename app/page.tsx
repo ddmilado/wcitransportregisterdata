@@ -21,7 +21,7 @@ const client = new Client()
 const databases = new Databases(client);
 
 export default function Home() {
-  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [registrations, setRegistrations] = useState<Register[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
