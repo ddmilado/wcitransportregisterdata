@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Client, Databases } from "appwrite";
 
 // Define the interface for the registration data
-interface Registration {
+interface Register {
   $id: string;
   $createdAt: string;
   $updatedAt: string;
