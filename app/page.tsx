@@ -30,7 +30,7 @@ export default function Home() {
 
   const fetchRegistrations = async () => {
     try {
-      const response = await databases.listDocuments<Registration>(
+      const response = await databases.listDocuments<Register>(
         "675821f00019a9ddd1c0", // Database ID
         "678bea500016265fa4f9", // Collection ID
       );
