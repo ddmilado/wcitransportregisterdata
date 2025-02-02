@@ -1,12 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Client, Databases } from "appwrite";
+import { Client, Databases, Models } from "appwrite";
 
-// Define the interface for the registration data
-interface Register {
-  $id: string;
-  $createdAt: string;
-  $updatedAt: string;
+// Extend the Appwrite Document interface
+interface Register extends Models.Document {
   fullName: string;
   location: string;
   phoneNumber: string;
@@ -46,7 +43,7 @@ export default function Home() {
   const timeOptions: Intl.DateTimeFormatOptions = {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false, // set to true if you prefer 12-hour format
+    hour12: false,
   };
 
   if (loading) {
