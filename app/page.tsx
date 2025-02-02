@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Client, Databases, Query } from "appwrite";
+import { Client, Databases } from "appwrite";
 
 // Define the interface for the registration data
 interface Registration {
