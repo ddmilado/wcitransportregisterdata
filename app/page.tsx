@@ -9,6 +9,9 @@ interface Register extends Models.Document {
   phoneNumber: string;
   worshippersToChurch: number;
   worshippersFromChurch: number;
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
 }
 
 const client = new Client()
@@ -31,7 +34,15 @@ export default function Home() {
         "675821f00019a9ddd1c0", // Database ID
         "678bea500016265fa4f9", // Collection ID
       );
-      setRegistrations(response.documents);
+      
+      // Filter registrations to only show entries less than 24 hours old
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const recentRegistrations = response.documents.filter((registration: Register) => {
+        const registrationDate = new Date(registration.$createdAt);
+        return registrationDate > twentyFourHoursAgo;
+      });
+      
+      setRegistrations(recentRegistrations);
     } catch (error) {
       console.error("Error fetching registrations:", error);
     } finally {
