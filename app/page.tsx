@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Client, Databases, Models, Query } from "appwrite";
 
 // Appwrite document type
@@ -31,7 +31,7 @@ export default function Home() {
     fetchRegistrations();
   }, []);
 
-  // Fetch all documents via cursor-based pagination
+  // Fetch all documents with cursor-based pagination
   const fetchRegistrations = async () => {
     const allDocs: Register[] = [];
     let lastId: string | null = null;
@@ -72,7 +72,7 @@ export default function Home() {
     }
   };
 
-  // Formatters
+  // Date and Time Formatters
   const timeOptions: Intl.DateTimeFormatOptions = {
     hour: "2-digit",
     minute: "2-digit",
@@ -86,7 +86,7 @@ export default function Home() {
     day: "numeric",
   };
 
-  // Pagination
+  // Pagination Logic
   const indexOfLast = currentPage * registrationsPerPage;
   const indexOfFirst = indexOfLast - registrationsPerPage;
   const currentRegs = registrations.slice(indexOfFirst, indexOfLast);
@@ -97,25 +97,25 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-red-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-200 to-purple-400">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-100 to-white py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-200 to-purple-400 py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-red-800 tracking-tight drop-shadow-sm">
+          <h1 className="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">
             WCI Dubai Transportation Register
           </h1>
-          <p className="text-gray-700 mt-2 text-lg">Latest entries appear first</p>
+          <p className="text-gray-200 mt-2 text-lg">Latest entries appear first</p>
         </div>
 
         {/* Content Cards */}
-        <div className="bg-white/70 backdrop-blur shadow-2xl rounded-2xl p-6 space-y-6">
+        <div className="bg-white/80 backdrop-blur-lg shadow-xl rounded-2xl p-6 space-y-6">
           {currentRegs.length === 0 ? (
             <p className="text-center text-gray-500">No registrations found.</p>
           ) : (
@@ -125,10 +125,10 @@ export default function Home() {
               return (
                 <div
                   key={reg.$id}
-                  className="rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition duration-300 p-6"
+                  className="rounded-xl border border-gray-200 bg-white shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105 p-6"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xl font-bold">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-pink-400 to-indigo-500 flex items-center justify-center text-white text-xl font-bold">
                       {reg.fullName.charAt(0)}
                     </div>
                     <div>
@@ -162,19 +162,19 @@ export default function Home() {
             <button
               onClick={goToPrev}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition disabled:opacity-50"
             >
-              ⬅ Previous
+              Previous
             </button>
-            <span className="text-gray-700 font-medium">
+            <div className="text-gray-700">
               Page {currentPage} of {totalPages}
-            </span>
+            </div>
             <button
               onClick={goToNext}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition disabled:opacity-50"
             >
-              Next ➡
+              Next
             </button>
           </div>
         )}
