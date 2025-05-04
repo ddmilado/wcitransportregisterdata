@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Client, Databases, Models } from "appwrite";
 
-// Extend the Appwrite Document interface
+// Define the Register interface
 interface Register extends Models.Document {
   fullName: string;
   location: string;
@@ -14,6 +14,7 @@ interface Register extends Models.Document {
   $updatedAt: string;
 }
 
+// Initialize Appwrite client
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
   .setProject("67581f8c003e096231c3");
@@ -32,25 +33,18 @@ export default function Home() {
     try {
       const response = await databases.listDocuments<Register>(
         "675821f00019a9ddd1c0", // Database ID
-        "678bea500016265fa4f9", // Collection ID
+        "678bea500016265fa4f9"  // Collection ID
       );
-      
-  //     // Filter registrations to only show entries less than 24 hours old
-  //     const twentyFourHoursAgo = new Date(Date.now() - 36 * 60 * 60 * 1000);
-  //     const recentRegistrations = response.documents.filter((registration: Register) => {
-  //       const registrationDate = new Date(registration.$createdAt);
-  //       return registrationDate > twentyFourHoursAgo;
-  //     });
-      
-  //     setRegistrations(recentRegistrations);
-  //   } catch (error) {
-  //     console.error("Error fetching registrations:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
-  // Options for displaying time without seconds
+      // No filtering; display all documents
+      setRegistrations(response.documents);
+    } catch (error) {
+      console.error("Error fetching registrations:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const timeOptions: Intl.DateTimeFormatOptions = {
     hour: "2-digit",
     minute: "2-digit",
@@ -82,7 +76,6 @@ export default function Home() {
                   key={registration.$id}
                   className="bg-white border border-gray-100 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 ease-in-out"
                 >
-                  {/* Header with avatar and full name */}
                   <div className="flex items-center space-x-3">
                     <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
                       <span className="text-red-700 text-lg font-semibold">
@@ -100,9 +93,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Details grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    {/* Location */}
                     <div className="flex items-center space-x-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +120,6 @@ export default function Home() {
                       </span>
                     </div>
 
-                    {/* Phone Number */}
                     <div className="flex items-center space-x-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +140,6 @@ export default function Home() {
                       </span>
                     </div>
 
-                    {/* Worshippers to Church */}
                     <div className="flex items-center space-x-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +160,6 @@ export default function Home() {
                       </span>
                     </div>
 
-                    {/* Worshippers from Church */}
                     <div className="flex items-center space-x-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +181,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Signed Out Time */}
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">
                       Signed Out at{" "}
@@ -209,3 +196,4 @@ export default function Home() {
     </div>
   );
 }
+
