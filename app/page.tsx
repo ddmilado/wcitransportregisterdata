@@ -36,7 +36,7 @@ export default function Home() {
       );
       
       // Filter registrations to only show entries less than 24 hours old
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const twentyFourHoursAgo = new Date(Date.now() - 36 * 60 * 60 * 1000);
       const recentRegistrations = response.documents.filter((registration: Register) => {
         const registrationDate = new Date(registration.$createdAt);
         return registrationDate > twentyFourHoursAgo;
