@@ -24,6 +24,8 @@ const databases = new Databases(client);
 export default function Home() {
   const [registrations, setRegistrations] = useState<Register[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const registrationsPerPage = 5;
 
   useEffect(() => {
     fetchRegistrations();
@@ -36,8 +38,10 @@ export default function Home() {
         "678bea500016265fa4f9"  // Collection ID
       );
 
-      // No filtering; display all documents
-      setRegistrations(response.documents);
+      const sorted = response.documents.sort(
+        (a, b) => new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()
+      );
+      setRegistrations(sorted);
     } catch (error) {
       console.error("Error fetching registrations:", error);
     } finally {
@@ -51,149 +55,107 @@ export default function Home() {
     hour12: false,
   };
 
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  const indexOfLastRegistration = currentPage * registrationsPerPage;
+  const indexOfFirstRegistration = indexOfLastRegistration - registrationsPerPage;
+  const currentRegistrations = registrations.slice(indexOfFirstRegistration, indexOfLastRegistration);
+  const totalPages = Math.ceil(registrations.length / registrationsPerPage);
+
+  const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-700"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-red-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
-          WCI DUBAI TRANSPORTATION UNIT REGISTER
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-red-100 to-white py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-red-800 tracking-tight drop-shadow-sm">
+            WCI Dubai Transportation Register
+          </h1>
+          <p className="text-gray-700 mt-2 text-lg">
+            Most recent entries listed first
+          </p>
+        </div>
 
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 p-6">
-            {registrations.length === 0 ? (
-              <p className="text-center text-gray-500">No registrations found</p>
-            ) : (
-              registrations.map((registration) => (
+        <div className="bg-white/70 backdrop-blur shadow-2xl rounded-2xl p-6 space-y-6">
+          {currentRegistrations.length === 0 ? (
+            <p className="text-center text-gray-500">No registrations found</p>
+          ) : (
+            currentRegistrations.map((registration) => {
+              const createdAt = new Date(registration.$createdAt);
+              const updatedAt = new Date(registration.$updatedAt);
+              return (
                 <div
                   key={registration.$id}
-                  className="bg-white border border-gray-100 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 ease-in-out"
+                  className="rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition duration-300 p-6"
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                      <span className="text-red-700 text-lg font-semibold">
-                        {registration.fullName.charAt(0)}
-                      </span>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-700 text-xl font-bold">
+                      {registration.fullName.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {registration.fullName}
-                      </h3>
+                      <h3 className="text-xl font-semibold text-gray-900">{registration.fullName}</h3>
                       <p className="text-sm text-gray-500">
-                        Signed In at{" "}
-                        {new Date(registration.$createdAt).toLocaleTimeString([], timeOptions)}
+                        {createdAt.toLocaleDateString(undefined, dateOptions)}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Signed In: {createdAt.toLocaleTimeString([], timeOptions)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 11c-4 0-7 3-7 7h14c0-4-3-7-7-7z"
-                        />
-                      </svg>
-                      <span className="text-gray-600">
-                        {registration.location}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      <span className="text-gray-600">
-                        {registration.phoneNumber}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 01-8 0M12 3v4m0 0a4 4 0 00-4 4v2a4 4 0 004 4 4 4 0 004-4v-2a4 4 0 00-4-4z"
-                        />
-                      </svg>
-                      <span className="text-gray-600">
-                        Worshippers to Church: {registration.worshippersToChurch}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 01-8 0M12 3v4m0 0a4 4 0 00-4 4v2a4 4 0 004 4 4 4 0 004-4v-2a4 4 0 00-4-4z"
-                        />
-                      </svg>
-                      <span className="text-gray-600">
-                        Worshippers from Church: {registration.worshippersFromChurch}
-                      </span>
-                    </div>
+                  <div className="grid sm:grid-cols-2 gap-3 text-gray-700 text-sm">
+                    <p>📍 Location: {registration.location}</p>
+                    <p>📞 Phone: {registration.phoneNumber}</p>
+                    <p>🧍‍♂️ To Church: {registration.worshippersToChurch}</p>
+                    <p>🚶‍♀️ From Church: {registration.worshippersFromChurch}</p>
                   </div>
 
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-500">
-                      Signed Out at{" "}
-                      {new Date(registration.$updatedAt).toLocaleTimeString([], timeOptions)}
-                    </p>
-                  </div>
+                  <p className="text-xs text-gray-400 mt-3">
+                    Signed Out: {updatedAt.toLocaleTimeString([], timeOptions)}
+                  </p>
                 </div>
-              ))
-            )}
-          </div>
+              );
+            })
+          )}
         </div>
+
+        {/* Pagination */}
+        {registrations.length > registrationsPerPage && (
+          <div className="flex justify-between items-center mt-8 px-4">
+            <button
+              onClick={goToPrevPage}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
+            >
+              ⬅ Previous
+            </button>
+            <span className="text-gray-700 font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50"
+            >
+              Next ➡
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
