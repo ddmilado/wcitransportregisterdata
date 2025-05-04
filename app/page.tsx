@@ -35,20 +35,20 @@ export default function Home() {
         "678bea500016265fa4f9", // Collection ID
       );
       
-      // Filter registrations to only show entries less than 24 hours old
-      const twentyFourHoursAgo = new Date(Date.now() - 36 * 60 * 60 * 1000);
-      const recentRegistrations = response.documents.filter((registration: Register) => {
-        const registrationDate = new Date(registration.$createdAt);
-        return registrationDate > twentyFourHoursAgo;
-      });
+  //     // Filter registrations to only show entries less than 24 hours old
+  //     const twentyFourHoursAgo = new Date(Date.now() - 36 * 60 * 60 * 1000);
+  //     const recentRegistrations = response.documents.filter((registration: Register) => {
+  //       const registrationDate = new Date(registration.$createdAt);
+  //       return registrationDate > twentyFourHoursAgo;
+  //     });
       
-      setRegistrations(recentRegistrations);
-    } catch (error) {
-      console.error("Error fetching registrations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setRegistrations(recentRegistrations);
+  //   } catch (error) {
+  //     console.error("Error fetching registrations:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Options for displaying time without seconds
   const timeOptions: Intl.DateTimeFormatOptions = {
