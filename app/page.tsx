@@ -111,7 +111,6 @@ export default function Home() {
           <h1 className="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">
             WCI Dubai Transportation Register
           </h1>
-          <p className="text-gray-200 mt-2 text-lg">Latest entries appear first</p>
         </div>
 
         {/* Content Cards */}
